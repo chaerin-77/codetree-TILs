@@ -108,8 +108,8 @@ public class Main {
 
     private static void checkNotify(int num) {
         Deque<Node> q = new ArrayDeque<>();
-        q.offer(chat[chat[num].child1]);
-        q.offer(chat[chat[num].child2]);
+        if (chat[num].child1 != -1) q.offer(chat[chat[num].child1]);
+        if (chat[num].child1 != -1)q.offer(chat[chat[num].child2]);
 
         int depth = 1;
         while (!q.isEmpty()) {
