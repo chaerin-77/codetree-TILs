@@ -10,15 +10,19 @@ import java.util.StringTokenizer;
 
 public class Main {
     static class Node {
-        int num, parent, power;
+        int num, power, parent, child1 = -1, child2 = -1;
         boolean flag = true; // 기본으로 켜져있음
-        List<Node> children = new ArrayList<>();
 
         public Node(int num, int parent, int power) {
             super();
             this.num = num;
             this.parent = parent;
             this.power = power;
+        }
+
+        public void setChild (int a) {
+            if (child1 == -1) child1 = a;
+            else child2 = a;
         }
         
         public void OnOff () {
@@ -27,8 +31,8 @@ public class Main {
         }
         
         public void changeChildren(int a, int b) {
-            children.remove(chat[a]);
-            children.add(chat[b]);
+            if (child1 == a) child1 = b;
+            else child2 = b;
         }
     }
 
@@ -55,7 +59,7 @@ public class Main {
                     int parent = Integer.parseInt(st.nextToken());
                     chat[i].num = i;
                     chat[i].parent = parent;
-                    chat[parent].children.add(chat[i]);
+                    chat[parent].setChild(i);
                 }
                 
                 for (int i = 1; i <= N; i++) {
@@ -81,11 +85,13 @@ public class Main {
             case 400:
                 int a = Integer.parseInt(st.nextToken());
                 int b = Integer.parseInt(st.nextToken());
-                int temp = chat[a].parent;
-                chat[temp].changeChildren(a, b);
-                chat[a].parent = chat[b].parent;
-                chat[chat[b].parent].changeChildren(b, a);
-                chat[b].parent = temp;
+                if (chat[a].parent != chat[b].parent) {
+                    int aparent = chat[a].parent;
+                    chat[aparent].changeChildren(a, b);
+                    chat[a].parent = chat[b].parent;
+                    chat[chat[b].parent].changeChildren(b, a);
+                    chat[b].parent = aparent;
+                }
                 break;
                 
             // 알림 받을 수 있는 채팅방 수 조회
@@ -93,7 +99,7 @@ public class Main {
                 int num3 = Integer.parseInt(st.nextToken());
                 count = 0;
                 checkNotify(num3);
-                sb.append(count - 1).append("\n");
+                sb.append(count).append("\n");
                 break;
             }
         }
@@ -102,9 +108,10 @@ public class Main {
 
     private static void checkNotify(int num) {
         Deque<Node> q = new ArrayDeque<>();
-        q.offer(chat[num]);
-        
-        int depth = 0;
+        q.offer(chat[chat[num].child1]);
+        q.offer(chat[chat[num].child2]);
+
+        int depth = 1;
         while (!q.isEmpty()) {
             int size = q.size();
             for (int s = 0; s < size; s++) {
@@ -115,9 +122,8 @@ public class Main {
                     count++;
                 }
 
-                for (Node i : cur.children) {
-                    q.offer(i);
-                }
+                if (cur.child1 != -1) q.offer(chat[cur.child1]);
+                if (cur.child2 != -1) q.offer(chat[cur.child2]);
             }
             depth++;
         }
