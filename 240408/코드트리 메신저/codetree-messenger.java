@@ -10,13 +10,12 @@ import java.util.StringTokenizer;
 
 public class Main {
     static class Node {
-        int num, power, parent, child1 = -1, child2 = -1;
+        int num, power, child1 = -1, child2 = -1;
         boolean flag = true; // 기본으로 켜져있음
 
-        public Node(int num, int parent, int power) {
+        public Node(int num, int power) {
             super();
             this.num = num;
-            this.parent = parent;
             this.power = power;
         }
 
@@ -37,6 +36,7 @@ public class Main {
     }
 
     static Node[] chat;
+    static int[] parents;
     static int Q, N, count;
 
     public static void main(String[] args) throws IOException {
@@ -46,8 +46,9 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         Q = Integer.parseInt(st.nextToken());
         chat = new Node[N + 1]; // 0번 메인 채팅방 포함
+        parents = new int[N + 1];
         for (int i = 0; i <= N; i++)
-            chat[i] = new Node(0, 0, 0);
+            chat[i] = new Node(0, 0);
         
         for (int q = 0; q < Q; q++) {
             st = new StringTokenizer(br.readLine());
@@ -58,7 +59,7 @@ public class Main {
                 for (int i = 1; i <= N; i++) {
                     int parent = Integer.parseInt(st.nextToken());
                     chat[i].num = i;
-                    chat[i].parent = parent;
+                    parents[i] = parent;
                     chat[parent].setChild(i);
                 }
                 
@@ -85,12 +86,13 @@ public class Main {
             case 400:
                 int a = Integer.parseInt(st.nextToken());
                 int b = Integer.parseInt(st.nextToken());
-                if (chat[a].parent != chat[b].parent) {
-                    int aparent = chat[a].parent;
+                if (parents[a] != parents[b]) {
+                    int aparent = parents[a];
+                    int bparent = parents[b];
                     chat[aparent].changeChildren(a, b);
-                    chat[a].parent = chat[b].parent;
-                    chat[chat[b].parent].changeChildren(b, a);
-                    chat[b].parent = aparent;
+                    parents[a] = bparent;
+                    chat[bparent].changeChildren(b, a);
+                    parents[b] = aparent;
                 }
                 break;
                 
