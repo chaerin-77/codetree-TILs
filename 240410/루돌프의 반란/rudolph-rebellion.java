@@ -1,9 +1,16 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
+
+/*
+ * 문제 해결 프로세스
+ * 1. 루돌프가 기절시킨 산타는 현재턴, 다음턴에는 이동 불가
+ * - 루돌프가 기절시킨 경우와 산타가 기절시킨 경우를 숫자로 지정
+ * 2. 루돌프, 산타 이동조건 확인
+ * 3. 현재 위치에서 이동할 산타 지정 -> 우선순위 큐 사용
+ */
 
 public class Main {
     static class Santa implements Comparable<Santa>{
