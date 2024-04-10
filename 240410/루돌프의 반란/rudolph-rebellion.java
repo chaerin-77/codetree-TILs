@@ -74,7 +74,7 @@ public class Main {
             santas[num] = new Santa(num, r, c);
             map[r][c] = num;
         }
-        
+
         for (int m = 0; m < M; m++) {
             q.clear();
             moveRudolf();
@@ -126,7 +126,7 @@ public class Main {
                 santas[idx].score += D;
                 santas[idx].stun = 1;
 
-                if (nr < 0 || nr < 0 || nr >= N || nc >= N) {
+                if (nr < 0 || nc < 0 || nr >= N || nc >= N) {
                     santas[idx].isAlive = false;
                     return;
                 }
