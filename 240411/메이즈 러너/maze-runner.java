@@ -41,6 +41,7 @@ public class Main {
     static int[][] map;
     static int[] dr = {-1, 1, 0, 0};
     static int[] dc = {0, 0, -1, 1};
+    static boolean flag = false;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -70,16 +71,15 @@ public class Main {
         map[exit[0]][exit[1]] = -1;
 
         for (int k = 0; k < K; k++) {
-            boolean flag = false;
             for (int i = 1; i <= M; i++) {
                 if (users[i].isEscape) continue;
-                flag = true;
                 moveUser(i);
             }
 //            System.out.println("참가자 이동-----------");
 //            Print();
-            if (!flag) break;
+
             rotateMiro();
+            if (flag) break;
 //            System.out.println("미로 회전-----------");
 //            System.out.println(exit[0] + " " + exit[1]);
 //            Print();
@@ -147,6 +147,11 @@ public class Main {
         }
 
         User pickedUser = q.poll();
+        if (pickedUser == null) {
+        	flag = true;
+        	return;
+        }
+        
         int num = pickedUser.num;
         int maxR = Math.max(exit[0], users[num].r);
         int maxC = Math.max(exit[1], users[num].c);
