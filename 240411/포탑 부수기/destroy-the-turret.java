@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
@@ -30,6 +31,11 @@ public class Main {
 				return Integer.compare(o.T, this.T);
 			}
 			return Integer.compare(this.power, o.power);
+		}
+
+		@Override
+		public String toString() {
+			return "Turret [num=" + num + ", r=" + r + ", c=" + c + ", power=" + power + ", T=" + T + "]";
 		}
 	}
 	static int N, M, K, dist;
@@ -65,6 +71,7 @@ public class Main {
 			checkAttack = new boolean[turrets.size()];
 			dist = Integer.MAX_VALUE;
 			flag = false;
+//			Print();
 			attackTurret();
 //			Print();
 			for (int i = 1; i < checkAttack.length; i++) {
@@ -91,16 +98,20 @@ public class Main {
 			list.add(turrets.get(i));
 		}
 		Collections.sort(list);
+//		System.out.println(list);
 		
 		int weak = list.get(0).num;
 		int strong = list.get(list.size() - 1).num;
+//		System.out.println(turrets.get(weak).num + " " + turrets.get(weak).power);
+//		System.out.println(turrets.get(strong).num + " " + turrets.get(strong).power);
 		turrets.get(weak).power += (N + M);
 		
 		turrets.get(weak).T = K;
 		checkAttack[weak] = true;
 		boolean[] tempCheck = new boolean[turrets.size() + 1];
 		System.arraycopy(checkAttack, 0, tempCheck, 0, turrets.size());
-		razerAttack(strong, weak, 0, tempCheck);
+		razerAttack(weak, strong, weak, 0, tempCheck);
+//		System.out.println(flag);
 		if (!flag) bombAttack(weak, strong);
 		else {
 			for (int i = 1; i < turrets.size(); i++) {
@@ -111,6 +122,7 @@ public class Main {
 		}
 		checkAttack[strong] = true;
 		turrets.get(strong).power -= turrets.get(weak).power;
+		if (turrets.get(strong).power <= 0) map[turrets.get(strong).r][turrets.get(strong).c] = 0;
 	}
 
 	private static void bombAttack(int weak, int strong) {
@@ -130,7 +142,7 @@ public class Main {
 		}
 	}
 
-	private static void razerAttack(int strong, int idx, int cnt, boolean[] tempCheck) {
+	private static void razerAttack(int weak, int strong, int idx, int cnt, boolean[] tempCheck) {
 		if (idx == strong) {
 			if (cnt < dist) {
 				flag = true;
@@ -140,7 +152,7 @@ public class Main {
 			return;
 		}
 		
-		if (cnt >= idx) return;
+		if (cnt >= dist) return;
 		
 		int r = turrets.get(idx).r;
 		int c = turrets.get(idx).c;
@@ -148,12 +160,14 @@ public class Main {
 		for (int d = 0; d < 8; d += 2) {
 			int nr = (r + dr[d] + N) % N;
 			int nc = (c + dc[d] + M) % M;
+//			System.out.println(nr + " " + nc);
 			
-			if (map[nr][nc] == 0 || tempCheck[map[nr][nc]]) continue;
+			if (map[nr][nc] == 0 || map[nr][nc] == weak || tempCheck[map[nr][nc]]) continue;
 			
 			int num = map[nr][nc];
+//			System.out.println(num);
 			tempCheck[num] = true;
-			razerAttack(strong, num, cnt + 1, tempCheck);
+			razerAttack(weak, strong, num, cnt + 1, tempCheck);
 			tempCheck[num] = false;
 		}
 	}
