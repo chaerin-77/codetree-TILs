@@ -4,6 +4,17 @@ import java.io.InputStreamReader;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
+/*
+ * 문제 해결 프로세스
+ * 1. 정사각형의 위치를 찾는 것이 관건
+ * - 거리로 구하기? 거리가 같지만 정사각형의 크기가 최소가 되는 경우가 따로 있음 -> 불가
+ * - 정사각형 크기로 구하기? 크기는 같지만 정사각형의 위치가 좌상단으로 가는 경우가 있음 -> 불가
+ * -> 각 좌표에서 출구와의 최소 정사각형 구하기 -> 이후 해당 위치를 포함하는 좌상단의 정사각형 시작 좌표를 구하여 정렬
+ * 2. 정렬한 참가자들에서 가장 우선시되는 참가자를 꺼내어 정사각형 선정 후 전환
+ * 3. 미로 회전 시 배열 인덱스의 규칙성을 활용하여 회전
+ * 4. 시간 종료 전 모든 참가자가 탈출하는지 여부 확인
+ */
+
 public class Main {
     static class User implements Comparable<User>{
         int num, r, c, dist, startR, startC;
@@ -40,6 +51,7 @@ public class Main {
                 int maxCo = Math.max(exit[1], o.c);
                 int startRo = maxRo - size < 0 ? 0: maxRo - size;
                 int startCo = maxCo - size < 0 ? 0: maxCo - size;
+                
             	if (this.startR == startRo) return Integer.compare(this.startC, startCo);
             	return Integer.compare(this.startR, startRo);
             }
@@ -86,20 +98,14 @@ public class Main {
         exit[1] = Integer.parseInt(st.nextToken()) - 1;
         map[exit[0]][exit[1]] = -1;
         
-//        Print();
         for (int k = 0; k < K; k++) {
             for (int i = 1; i <= M; i++) {
                 if (users[i].isEscape) continue;
                 moveUser(i);
             }
-//            System.out.println("참가자 이동-----------");
-//            System.out.println(moveCnt);
-//            Print();
 
             rotateMiro();
             if (flag) break;
-//            System.out.println("미로 회전-----------");
-//            Print();
         }
         System.out.println(moveCnt);
         System.out.println((exit[0]+1) + " " + (exit[1]+1));
@@ -137,7 +143,6 @@ public class Main {
             }
         }
         
-//        System.out.println(idx + " 이동: " + dir + " " + r + "," + c);
         if (dir == -1) return;
 
         map[r][c] -= 10;
@@ -162,9 +167,7 @@ public class Main {
             if (users[i].isEscape) continue;
             users[i].calcDist();
             q.offer(users[i]);
-//            System.out.println(Math.max(Math.abs(users[i].r - exit[0]), Math.abs(users[i].c - exit[1])));
         }
-//        System.out.println();
 
         User pickedUser = q.poll();
         if (pickedUser == null) {
@@ -187,14 +190,6 @@ public class Main {
             }
         }
         
-//        for (int i = 0; i <= size; i++) {
-//            for (int j = 0; j <= size; j++) {
-//                System.out.printf("%3d ", tempMap[i][j]);
-//            }
-//            System.out.println();
-//        }
-//        System.out.println();
-
         for (int i = 0; i <= size; i++) {
         	int temp = size;
         	for (int j = 0; j <= size; j++) {
