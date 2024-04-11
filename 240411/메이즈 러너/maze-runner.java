@@ -16,7 +16,7 @@ public class Main {
         }
 
         public int calcDist() {
-            dist = Math.abs(r - exit[0]) + Math.abs(c - exit[1]);
+            dist = Math.abs(this.r - exit[0]) + Math.abs(this.c - exit[1]);
             return dist;
         }
 
@@ -28,8 +28,13 @@ public class Main {
         @Override
         public int compareTo(User o) {
             if (this.dist == o.dist) {
-                if (this.r == o.r) return Integer.compare(this.c, o.c);
-                return Integer.compare(this.r, o.r);
+            	int tempT = Math.max(this.r - exit[0], this.c - exit[1]);
+            	int tempO = Math.max(o.r - exit[0], o.c - exit[1]);
+                if (tempT == tempO) {
+                	if (this.r == o.r) return Integer.compare(this.c, o.c);
+                    return Integer.compare(this.r, o.r);
+                }
+                return Integer.compare(tempT, tempO);
             }
             return Integer.compare(this.dist, o.dist);
         }
@@ -63,7 +68,11 @@ public class Main {
             int r = Integer.parseInt(st.nextToken()) - 1;
             int c = Integer.parseInt(st.nextToken()) - 1;
             users[i] = new User(i, r, c);
-            map[r][c] = (1 << i) + 10;
+            if (map[r][c] == 0) map[r][c] = (1 << i) + 10;
+            else {
+                map[r][c] -= 10;
+                map[r][c] = (map[r][c] | (1 << i)) + 10;
+            }
         }
         st = new StringTokenizer(br.readLine());
         exit[0] = Integer.parseInt(st.nextToken()) - 1;
@@ -76,6 +85,7 @@ public class Main {
                 moveUser(i);
             }
 //            System.out.println("참가자 이동-----------");
+//            System.out.println(moveCnt);
 //            Print();
 
             rotateMiro();
@@ -120,6 +130,7 @@ public class Main {
             }
         }
         
+//        System.out.println(idx + " 이동: " + dir + " " + r + "," + c);
         if (dir == -1) return;
 
         map[r][c] -= 10;
