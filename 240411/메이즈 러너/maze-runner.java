@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     static class User implements Comparable<User>{
-        int num, r, c, dist;
+        int num, r, c, dist, startR, startC;
         boolean isEscape = false;
 
         public User(int num, int r, int c) {
@@ -27,16 +27,23 @@ public class Main {
 
         @Override
         public int compareTo(User o) {
-            if (this.dist == o.dist) {
-            	int tempT = Math.max(this.r - exit[0], this.c - exit[1]);
-            	int tempO = Math.max(o.r - exit[0], o.c - exit[1]);
-                if (tempT == tempO) {
-                	if (this.r == o.r) return Integer.compare(this.c, o.c);
-                    return Integer.compare(this.r, o.r);
-                }
-                return Integer.compare(tempT, tempO);
+            int tempT = Math.max(Math.abs(this.r - exit[0]), Math.abs(this.c - exit[1]));
+           	int tempO = Math.max(Math.abs(o.r - exit[0]), Math.abs(o.c - exit[1]));
+            if (tempT == tempO) {
+            	int maxR = Math.max(exit[0], this.r);
+                int maxC = Math.max(exit[1], this.c);
+                int size = Math.max(Math.abs(exit[0] - this.r), Math.abs(exit[1] - this.c));
+                startR = maxR - size < 0 ? 0: maxR - size;
+                startC = maxC - size < 0 ? 0: maxC - size;
+                
+                int maxRo = Math.max(exit[0], o.r);
+                int maxCo = Math.max(exit[1], o.c);
+                int startRo = maxRo - size < 0 ? 0: maxRo - size;
+                int startCo = maxCo - size < 0 ? 0: maxCo - size;
+            	if (this.startR == startRo) return Integer.compare(this.startC, startCo);
+            	return Integer.compare(this.startR, startRo);
             }
-            return Integer.compare(this.dist, o.dist);
+            return Integer.compare(tempT, tempO);
         }
     }
     static int N, M, K, moveCnt = 0;
@@ -78,7 +85,8 @@ public class Main {
         exit[0] = Integer.parseInt(st.nextToken()) - 1;
         exit[1] = Integer.parseInt(st.nextToken()) - 1;
         map[exit[0]][exit[1]] = -1;
-
+        
+//        Print();
         for (int k = 0; k < K; k++) {
             for (int i = 1; i <= M; i++) {
                 if (users[i].isEscape) continue;
@@ -91,7 +99,6 @@ public class Main {
             rotateMiro();
             if (flag) break;
 //            System.out.println("미로 회전-----------");
-//            System.out.println(exit[0] + " " + exit[1]);
 //            Print();
         }
         System.out.println(moveCnt);
@@ -155,7 +162,9 @@ public class Main {
             if (users[i].isEscape) continue;
             users[i].calcDist();
             q.offer(users[i]);
+//            System.out.println(Math.max(Math.abs(users[i].r - exit[0]), Math.abs(users[i].c - exit[1])));
         }
+//        System.out.println();
 
         User pickedUser = q.poll();
         if (pickedUser == null) {
@@ -180,7 +189,7 @@ public class Main {
         
 //        for (int i = 0; i <= size; i++) {
 //            for (int j = 0; j <= size; j++) {
-//                System.out.printf("%d ", tempMap[i][j]);
+//                System.out.printf("%3d ", tempMap[i][j]);
 //            }
 //            System.out.println();
 //        }
@@ -217,7 +226,7 @@ public class Main {
     private static void Print() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                System.out.printf("%d ", map[i][j]);
+                System.out.printf("%4d ", map[i][j]);
             }
             System.out.println();
         }
