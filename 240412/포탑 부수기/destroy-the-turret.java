@@ -71,7 +71,6 @@ public class Main {
 			checkAttack = new boolean[turrets.size()];
 			dist = Integer.MAX_VALUE;
 			flag = false;
-//			Print();
 			attackTurret();
 			
 			int cnt = 0;
@@ -140,7 +139,7 @@ public class Main {
 			int nr = (r + dr[d] + N) % N;
 			int nc = (c + dc[d] + M) % M;
 			
-			if (map[nr][nc] == 0) continue;
+			if (map[nr][nc] == 0 || map[nr][nc] == weak) continue;
 			
 			int num = map[nr][nc];
 			checkAttack[num] = true;
@@ -179,7 +178,8 @@ public class Main {
 	
 	private static void Print() {
 		for (int i = 1; i < turrets.size(); i++) {
-			System.out.printf("%d ", turrets.get(i).power);
+			System.out.printf("%d: %d ", i, turrets.get(i).power);
+			System.out.println();
 		}
 		System.out.println();
 		System.out.println();
