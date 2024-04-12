@@ -9,6 +9,20 @@ import java.util.Deque;
 import java.util.List;
 import java.util.StringTokenizer;
 
+/*
+ * 문제 해결 프로세스
+ * 1. 공격자와 공격 대상 선택 -> 리스트를 이용하여 정렬
+ * - 정렬 기준은 문제 그대로 진행
+ * - 커서 앞으로 정렬되고 싶으면 뒤에 넣기!! (나 기준)
+ * 2. 탐색 과정에서 내 경로 기억하는 방법
+ * - bfs이용하여 최단 경로 찾기 진행
+ * - 이 때 방문 배열 이외의 배열을 하나 더 생성하여 오기 직전 좌표나 번호 저장하여 이동
+ * - 현재 1번 포탑에서 3번 포탑으로 이동할 경우 back[3] = 1; 이런식
+ * - 이후에 확인할 땐 해당 번호를 꺼내어 사용
+ * - 좌표를 저장해야 할 경우엔 backR, backC로 두개 만들어서 저장 후 사용
+ * 3. 공격자는 데미지 입으면 안됨, 공격 대상은 데미지 전체 입음 -> 예외처리 확인 필수
+ */
+
 public class Main {
     static class Turret implements Comparable<Turret> {
         int num, r, c, power, T = 1001;
@@ -23,6 +37,7 @@ public class Main {
 
         @Override
         public int compareTo(Turret o) {
+        	//  커서 앞으로 갈거면 뒤에 넣기!!
             if (this.power == o.power) {
                 if (this.T == o.T) {
                     if (this.r + this.c == o.r + o.c) return Integer.compare(o.c, this.c);
@@ -86,8 +101,6 @@ public class Main {
                 if (checkAttack[i] || turrets.get(i).power <= 0) continue;
                 turrets.get(i).power++;
             }
-//            Print();
-//            System.out.println();
         }
         
         int max = 0;
@@ -106,26 +119,17 @@ public class Main {
             list.add(turrets.get(i));
         }
         Collections.sort(list);
-//        System.out.println(list);
         
         int weak = list.get(0).num;
         int strong = list.get(list.size() - 1).num;
         turrets.get(weak).power += (N + M);
-//        System.out.println(turrets.get(weak).num + " " + turrets.get(weak).power);
-//        System.out.println(turrets.get(strong).num + " " + turrets.get(strong).power);
         
         turrets.get(weak).T = K;
         checkAttack[weak] = true;
         razerAttack(weak, strong);
-//        System.out.println(flag);
+
         if (!flag) bombAttack(weak, strong);
-//        else {
-//            for (int i = 1; i < turrets.size(); i++) {
-//                if (!checkAttack[i] || i == weak || i == strong) continue;
-//                turrets.get(i).power -= turrets.get(weak).power / 2;
-//                if (turrets.get(i).power <= 0) map[turrets.get(i).r][turrets.get(i).c] = 0;
-//            }
-//        }
+
         checkAttack[strong] = true;
         turrets.get(strong).power -= turrets.get(weak).power;
         if (turrets.get(strong).power <= 0) map[turrets.get(strong).r][turrets.get(strong).c] = 0;
@@ -189,22 +193,5 @@ public class Main {
                 num = back[num];
         	}
         }
-    }
-    
-    private static void Print() {
-        for (int i = 1; i < turrets.size(); i++) {
-            System.out.printf("%d: %d ", i, turrets.get(i).power);
-            System.out.println();
-        }
-        System.out.println();
-        System.out.println();
-        
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                System.out.printf("%d ", map[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 }
