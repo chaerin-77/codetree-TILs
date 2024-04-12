@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 public class Main {
 	static class Turret implements Comparable<Turret> {
-		int num, r, c, power, T = 0;
+		int num, r, c, power, T = 1001;
 
 		public Turret(int num, int r, int c, int power) {
 			super();
@@ -180,6 +180,15 @@ public class Main {
 	private static void Print() {
 		for (int i = 1; i < turrets.size(); i++) {
 			System.out.printf("%d ", turrets.get(i).power);
+		}
+		System.out.println();
+		System.out.println();
+		
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				System.out.printf("%d ", map[i][j]);
+			}
+			System.out.println();
 		}
 		System.out.println();
 	}
