@@ -121,6 +121,7 @@ public class Main {
                 int nc = c + dc[d];
 
                 if (nr < 0 || nc < 0 || nr >= N || nc >= N || visited[nr][nc]) continue;
+                if (map[nr][nc] == -1 && !(nr == users[idx].r && nc == users[idx].c)) continue;
 
                 visited[nr][nc] = true;
                 step[nr][nc] = step[r][c] + 1;
