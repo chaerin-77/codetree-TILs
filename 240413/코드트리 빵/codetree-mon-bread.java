@@ -120,7 +120,7 @@ public class Main {
                 int nr = r + dr[d];
                 int nc = c + dc[d];
 
-                if (nr < 0 || nc < 0 || nr >= N || nc >= N || visited[nr][nc] || map[nr][nc] == -1) continue;
+                if (nr < 0 || nc < 0 || nr >= N || nc >= N || visited[nr][nc]) continue;
 
                 visited[nr][nc] = true;
                 step[nr][nc] = step[r][c] + 1;
@@ -140,9 +140,9 @@ public class Main {
                 dir = d;
             }
         }
+
         users[idx]. r += dr[dir];
         users[idx]. c += dc[dir];
-
         if (users[idx].r == convR && users[idx].c == convC) {
             users[idx].isArrived = true;
         }
